@@ -1,12 +1,30 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 
 namespace GrokAssembly
 {
 	class MainClass
 	{
+		private static string xmlSanitize(string input)
+		{
+			StringBuilder result = new StringBuilder();
+			foreach (char c in input)
+			{
+				if (XmlConvert.IsXmlChar(c))
+				{
+					result.Append(c);
+				}
+				else {
+					result.Append('?');
+				}
+			}
+
+			return result.ToString();
+		}
+
 		public static int Main (string[] args)
 		{
 			int retval = 0;
@@ -47,24 +65,26 @@ namespace GrokAssembly
 					}
 
 					writer.WriteStartElement ("product");
-					writer.WriteString (assembly.GetName ().Name);
+					writer.WriteString (xmlSanitize(assembly.GetName ().Name));
 					writer.WriteEndElement ();
 
 					writer.WriteStartElement ("version");
-					writer.WriteString (assembly.GetName ().Version.ToString ());
+					writer.WriteString (xmlSanitize(assembly.GetName ().Version.ToString ()));
 					writer.WriteEndElement ();
 
 					writer.WriteStartElement ("fullname");
-					writer.WriteString(assembly.FullName);
+					writer.WriteString(xmlSanitize(assembly.FullName));
 					writer.WriteEndElement();
 
+					/*
 					writer.WriteStartElement ("types");
 					foreach (Type type in assembly.GetTypes()) {
 						writer.WriteStartElement ("type");
-						writer.WriteString (type.FullName);
+						writer.WriteString (xmlSanitize(type.FullName));
 						writer.WriteEndElement ();
 					}
-					writer.WriteEndElement ();	
+					writer.WriteEndElement ();
+					*/
 				} catch (BadImageFormatException) {
 					writer.WriteStartElement ("error");
 					writer.WriteString ("Bad assembly file");
