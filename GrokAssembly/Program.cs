@@ -57,9 +57,13 @@ namespace GrokAssembly
 							writer.WriteEndElement();
 						}
 					} catch (FileNotFoundException) {
-						// Getting custom attributes sometimes required dependent assemblies to be available
+						writer.WriteStartElement("company");
+						writer.WriteString("UNKNOWN");
+						writer.WriteEndElement();
 					} catch (TypeLoadException) {
-						// This may happen if a parent assembly is not available
+						writer.WriteStartElement("company");
+						writer.WriteString("UNKNOWN");
+						writer.WriteEndElement();
 					} finally {
 						Console.SetOut(temp);
 					}
@@ -91,10 +95,15 @@ namespace GrokAssembly
 					writer.WriteEndElement ();
 					retval = 3;
 				} catch (ReflectionTypeLoadException) {
-					// Nothing much we can do - the type information isn't available - maybe
-					// becaused referenced libraries aren't around
+					writer.WriteStartElement ("error");
+					writer.WriteString ("Unable to get type information");
+					writer.WriteEndElement ();
+					retval = 4;
 				} catch (Exception) {
-					// At this point, really not much we can do
+					writer.WriteStartElement ("error");
+					writer.WriteString ("An unknown error has occurred");
+					writer.WriteEndElement ();
+					retval = 5;
 				}
 			}
 
