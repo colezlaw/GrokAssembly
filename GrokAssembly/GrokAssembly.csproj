@@ -39,4 +39,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cp $(ProjectDir)\GrokAssembly.exe.config $(ProjectDir)\$(OutDir)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
