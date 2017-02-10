@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace GrokAssembly
 {
-	class MainClass
+	static class MainClass
 	{
 		private static string xmlSanitize(string input)
 		{
@@ -34,7 +34,7 @@ namespace GrokAssembly
 			writer.WriteStartDocument ();
 			writer.WriteStartElement ("assembly");
 
-			if (args.Length < 1) {
+			if (args.Length != 1) {
 				writer.WriteStartElement ("error");
 				writer.WriteString ("Usage: GrokAssembly.exe <filename>");
 				writer.WriteEndElement ();
@@ -99,6 +99,11 @@ namespace GrokAssembly
 					writer.WriteString ("Unable to get type information");
 					writer.WriteEndElement ();
 					retval = 4;
+				} catch (FileLoadException) {
+					writer.WriteStartElement ("error");
+					writer.WriteString ("Managed assembly cannot be loaded");
+					writer.WriteEndElement ();
+					retval = 6;
 				} catch (Exception) {
 					writer.WriteStartElement ("error");
 					writer.WriteString ("An unknown error has occurred");
