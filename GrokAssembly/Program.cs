@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using System.Diagnostics;
 using System.Text;
 using System.Xml;
+using System.Reflection;
 
 namespace GrokAssembly
 {
@@ -46,38 +48,33 @@ namespace GrokAssembly
 				retval = 2;
 			} else {
 				try {
-					Assembly assembly = Assembly.LoadFile (Path.GetFullPath(args [0]));
+					FileVersionInfo fileInfo = FileVersionInfo.GetVersionInfo (Path.GetFullPath(args [0]));
 
-					TextWriter temp = Console.Out;
-					try {
-						AssemblyCompanyAttribute[] companies = (AssemblyCompanyAttribute[]) assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
-						if (companies != null && companies.Length > 0) {
-							writer.WriteStartElement("company");
-							writer.WriteString(companies[0].Company);
-							writer.WriteEndElement();
-						}
-					} catch (FileNotFoundException) {
+                    String companyName = fileInfo.CompanyName;
+
+                    if (companyName != null) {
 						writer.WriteStartElement("company");
+						writer.WriteString(xmlSanitize(companyName));
+						writer.WriteEndElement();
+					} else {
+                        writer.WriteStartElement("company");
 						writer.WriteString("UNKNOWN");
 						writer.WriteEndElement();
-					} catch (TypeLoadException) {
-						writer.WriteStartElement("company");
-						writer.WriteString("UNKNOWN");
-						writer.WriteEndElement();
-					} finally {
-						Console.SetOut(temp);
-					}
+                    }
 
 					writer.WriteStartElement ("product");
-					writer.WriteString (xmlSanitize(assembly.GetName ().Name));
+					writer.WriteString (xmlSanitize(fileInfo.ProductName));
 					writer.WriteEndElement ();
 
 					writer.WriteStartElement ("version");
-					writer.WriteString (xmlSanitize(assembly.GetName ().Version.ToString ()));
+					writer.WriteString (xmlSanitize(fileInfo.ProductVersion.ToString ()));
 					writer.WriteEndElement ();
 
-					writer.WriteStartElement ("fullname");
-					writer.WriteString(xmlSanitize(assembly.FullName));
+                    AssemblyName assemblyName = AssemblyName.GetAssemblyName(Path.GetFullPath(args[0]));
+
+
+                    writer.WriteStartElement ("fullname");
+					writer.WriteString(xmlSanitize(assemblyName.FullName));
 					writer.WriteEndElement();
 
 					/*
@@ -94,19 +91,14 @@ namespace GrokAssembly
 					writer.WriteString ("Bad assembly file");
 					writer.WriteEndElement ();
 					retval = 3;
-				} catch (ReflectionTypeLoadException) {
-					writer.WriteStartElement ("error");
-					writer.WriteString ("Unable to get type information");
-					writer.WriteEndElement ();
-					retval = 4;
 				} catch (FileLoadException) {
 					writer.WriteStartElement ("error");
 					writer.WriteString ("Managed assembly cannot be loaded");
 					writer.WriteEndElement ();
 					retval = 6;
-				} catch (Exception) {
+				} catch (Exception e) {
 					writer.WriteStartElement ("error");
-					writer.WriteString ("An unknown error has occurred");
+					writer.WriteString (e.Message);
 					writer.WriteEndElement ();
 					retval = 5;
 				}
