@@ -1,2 +1,6 @@
 language: csharp
 solution: GrokAssembly.sln
+mono: none
+dotnet: latest
+script:
+ - dotnet build
