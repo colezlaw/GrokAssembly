@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/jeremylong/GrokAssembly.svg?branch=master)](https://travis-ci.org/jeremylong/GrokAssembly)
 GrokAssembly
 ============
 

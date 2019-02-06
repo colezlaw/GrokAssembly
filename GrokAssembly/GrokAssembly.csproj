@@ -1,45 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F5FCA45C-85AB-4B24-93BE-FC2E8D677960}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>GrokAssembly</RootNamespace>
-    <AssemblyName>GrokAssembly</AssemblyName>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <AssemblyTitle>GrokAssembly</AssemblyTitle>
+    <AssemblyProduct>GrokAssembly</AssemblyProduct>
+    <Product>GrokAssembly</Product>
+    <AssemblyDescription>Inspects a .NET Assembly to determine Company, Product, and Version information</AssemblyDescription>
+    <Description>Inspects a .NET Assembly to determine Company, Product, and Version information</Description>
+    <AssemblyCompany>OWASP Foundation</AssemblyCompany>
+    <AssemblyCopyright>Copyright © 2018, OWASP Foundation. All Rights Reserved</AssemblyCopyright>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <version>2.0.0.0</version>
+    <PackageId>GrokAssembly</PackageId>
+    <PackageVersion>2.0.0.0</PackageVersion>
+    <Authors>OWASP Contributors</Authors>
+    <LicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</LicenseUrl>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>cp $(ProjectDir)\GrokAssembly.exe.config $(ProjectDir)\$(OutDir)</PostBuildEvent>
-  </PropertyGroup>
+
 </Project>
