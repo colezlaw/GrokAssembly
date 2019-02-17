@@ -77,6 +77,27 @@ namespace GrokAssembly
                     AssemblyName assemblyName = AssemblyName.GetAssemblyName(Path.GetFullPath(args[0]));
                     writeNode(writer, "fullname", assemblyName.FullName);
 
+                    writer.WriteStartElement("namespaces");
+                    try
+                    {
+                        Assembly assembly = Assembly.LoadFile(Path.GetFullPath(args[0]));
+                        HashSet<string> nspaces = new HashSet<string>();
+                        foreach (Type t in assembly.GetTypes())
+                        {
+                            string ns = t.GetTypeInfo().Namespace;
+                            if (!nspaces.Contains(ns))
+                            {
+                                writeNode(writer, "namespace", ns);
+                                nspaces.Add(ns);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        writeNode(writer, "warning", ex.Message);
+                    }
+                    writer.WriteEndElement();
+
                 }
                 catch (BadImageFormatException)
                 {
