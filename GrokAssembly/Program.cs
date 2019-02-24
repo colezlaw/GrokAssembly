@@ -80,7 +80,7 @@ namespace GrokAssembly
                     writer.WriteStartElement("namespaces");
                     try
                     {
-                        Assembly assembly = Assembly.LoadFile(Path.GetFullPath(args[0]));
+                        Assembly assembly = Assembly.LoadFrom(Path.GetFullPath(args[0]));
                         HashSet<string> nspaces = new HashSet<string>();
                         foreach (Type t in assembly.GetTypes())
                         {
@@ -91,12 +91,14 @@ namespace GrokAssembly
                                 nspaces.Add(ns);
                             }
                         }
+                        writer.WriteEndElement();
                     }
                     catch (Exception ex)
                     {
+                        writer.WriteEndElement();
                         writeNode(writer, "warning", ex.Message);
                     }
-                    writer.WriteEndElement();
+                    
 
                 }
                 catch (BadImageFormatException)
