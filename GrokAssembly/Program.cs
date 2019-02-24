@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Copyright (c) 2018 The OWASP Foundation. All Rights Reserved.
+ * Copyright (c) 2019 The OWASP Foundation. All Rights Reserved.
  */
 using System;
 using System.Collections.Generic;
@@ -20,6 +20,8 @@ using System.Diagnostics;
 using System.Text;
 using System.Xml;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 
 namespace GrokAssembly
 {
@@ -62,35 +64,62 @@ namespace GrokAssembly
                 {
                     FileVersionInfo fileInfo = FileVersionInfo.GetVersionInfo(Path.GetFullPath(args[0]));
 
-                    writeNode(writer, "CompanyName", fileInfo.CompanyName);
-                    writeNode(writer, "ProductName", fileInfo.ProductName);
-                    writeNode(writer, "ProductVersion", fileInfo.ProductVersion);
-                    writeNode(writer, "Comments", fileInfo.Comments);
-                    writeNode(writer, "FileDescription", fileInfo.FileDescription);
-                    writeNode(writer, "FileName", fileInfo.FileName);
-                    writeNode(writer, "FileVersion", fileInfo.FileVersion);
-                    writeNode(writer, "InternalName", fileInfo.InternalName);
-                    writeNode(writer, "LegalCopyright", fileInfo.LegalCopyright);
-                    writeNode(writer, "LegalTrademarks", fileInfo.LegalTrademarks);
-                    writeNode(writer, "OriginalFilename", fileInfo.OriginalFilename);
+                    writeNode(writer, "companyName", fileInfo.CompanyName);
+                    writeNode(writer, "productName", fileInfo.ProductName);
+                    writeNode(writer, "productVersion", fileInfo.ProductVersion);
+                    writeNode(writer, "comments", fileInfo.Comments);
+                    writeNode(writer, "fileDescription", fileInfo.FileDescription);
+                    writeNode(writer, "fileName", fileInfo.FileName);
+                    writeNode(writer, "fileVersion", fileInfo.FileVersion);
+                    writeNode(writer, "internalName", fileInfo.InternalName);
+                    writeNode(writer, "legalCopyright", fileInfo.LegalCopyright);
+                    writeNode(writer, "legalTrademarks", fileInfo.LegalTrademarks);
+                    writeNode(writer, "originalFilename", fileInfo.OriginalFilename);
 
                     AssemblyName assemblyName = AssemblyName.GetAssemblyName(Path.GetFullPath(args[0]));
-                    writeNode(writer, "fullname", assemblyName.FullName);
+                    writeNode(writer, "fullName", assemblyName.FullName);
 
+                    writer.WriteStartElement("namespaces");
+                    try
+                    {
+                        using (var stream = File.OpenRead(Path.GetFullPath(args[0])))
+                        using (var peFile = new PEReader(stream))
+                        {
+                            var reader = peFile.GetMetadataReader();
+                            HashSet<string> nspaces = new HashSet<string>();
+
+                            foreach (var handle in reader.TypeDefinitions)
+                            {
+                                var entry = reader.GetTypeDefinition(handle);
+                                string ns = reader.GetString(entry.Namespace);
+                                if (!nspaces.Contains(ns))
+                                {
+                                    writeNode(writer, "namespace", ns);
+                                    nspaces.Add(ns);
+                                }
+                            }
+                            writer.WriteEndElement();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        writer.WriteEndElement();
+                        writeNode(writer, "warning", ex.Message);
+                    }
                 }
                 catch (BadImageFormatException)
                 {
-                    writeNode(writer, "error", "Bad assembly file");
+                    writeNode(writer, "Error", "Bad assembly file");
                     retval = 3;
                 }
                 catch (FileLoadException)
                 {
-                    writeNode(writer, "error", "Managed assembly cannot be loaded");
+                    writeNode(writer, "Error", "Managed assembly cannot be loaded");
                     retval = 6;
                 }
                 catch (Exception e)
                 {
-                    writeNode(writer, "error", e.Message);
+                    writeNode(writer, "Error", e.Message);
                     retval = 5;
                 }
             }
@@ -142,6 +171,5 @@ namespace GrokAssembly
             }
             return result.ToString();
         }
-
     }
 }
