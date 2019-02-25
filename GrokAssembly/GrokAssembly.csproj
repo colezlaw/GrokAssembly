@@ -10,13 +10,17 @@
     <AssemblyDescription>Inspects a .NET Assembly to determine Company, Product, and Version information</AssemblyDescription>
     <Description>Inspects a .NET Assembly to determine Company, Product, and Version information</Description>
     <AssemblyCompany>OWASP Foundation</AssemblyCompany>
-    <AssemblyCopyright>Copyright © 2018, OWASP Foundation. All Rights Reserved</AssemblyCopyright>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <version>2.0.0.0</version>
+    <AssemblyCopyright>Copyright © 2019, OWASP Foundation. All Rights Reserved</AssemblyCopyright>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <version>3.0.0.0</version>
     <PackageId>GrokAssembly</PackageId>
-    <PackageVersion>2.0.0.0</PackageVersion>
+    <PackageVersion>3.0.0.0</PackageVersion>
     <Authors>OWASP Contributors</Authors>
     <LicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</LicenseUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
+  </ItemGroup>
 
 </Project>
