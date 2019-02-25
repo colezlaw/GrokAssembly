@@ -109,17 +109,17 @@ namespace GrokAssembly
                 }
                 catch (BadImageFormatException)
                 {
-                    writeNode(writer, "Error", "Bad assembly file");
+                    writeNode(writer, "error", "Bad assembly file");
                     retval = 3;
                 }
                 catch (FileLoadException)
                 {
-                    writeNode(writer, "Error", "Managed assembly cannot be loaded");
+                    writeNode(writer, "error", "Managed assembly cannot be loaded");
                     retval = 6;
                 }
                 catch (Exception e)
                 {
-                    writeNode(writer, "Error", e.Message);
+                    writeNode(writer, "error", e.Message);
                     retval = 5;
                 }
             }
